@@ -41,7 +41,7 @@ Wtyczka w Manifest V3 (WXT, React) dodaje przycisk „Sprawdź” pod postami na
 
 Wstrzyknięty interfejs działa w Shadow DOM i dopasowuje się do platformy przez skórki z design systemu: krój, promień narożników, tło, obramowanie i kolor linków ([ADR-09](adr/adr-09.md)). Znak i słowo „Meritum”, werdykt i źródła z cytatem wyglądają wszędzie tak samo. Na makietach platform i na prawdziwych stronach działa ten sam skrypt, bo makiety odtwarzają te same selektory DOM ([ADR-10](adr/adr-10.md)).
 
-Wtyczki nie publikujemy w Chrome Web Store. CI buduje zip dla dev i prd i zostawia go jako artefakt przebiegu.
+Wtyczki nie publikujemy w Chrome Web Store. CI buduje zip z adresem API prd z gałęzi `main` i zostawia go jako artefakt przebiegu.
 
 ## Konektor MCP
 

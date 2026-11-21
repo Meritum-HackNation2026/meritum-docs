@@ -35,7 +35,7 @@ uv run python scripts/test_generate.py
 
 ## Git
 
-- Branches: `main` (production site) and `develop` (preview). Changes go through a PR to `develop`; a human promotes `develop` to `main`. Never push to `develop` or `main`.
+- Branch: `main` only (production site). Changes go through a PR to `main`. Never push to `main`.
 - Commit messages, PR titles and descriptions are in Polish and pass through the `humanizer` skill before `git commit` or `gh pr create`.
 - No AI attribution anywhere: no `Co-Authored-By` for an AI, no "Generated with", no robot emoji, no session links.
 - No secrets in the repo. CI uses repo secrets only (the org is on the Free plan): `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `MERITUM_BOT_TOKEN`.
