@@ -78,7 +78,7 @@ flowchart TB
 | `meritum-web-<env>` | meritum-frontend | statyczny build aplikacji w nginx; `/api` idzie do API tego samego środowiska |
 | `meritum-api-<env>` | meritum-backend | FastAPI: health, zlecanie zadań, kanał Discord, dokumentacja OpenAPI |
 | `meritum-worker-<env>` | meritum-worker | trwałe workflowy DBOS: sprawdzenie, pobieranie źródeł, retencja, ewaluacja |
-| `meritum-mocks-prd` | meritum-mocks | makiety X, Facebooka, Instagrama, Reddita i TikToka oraz makieta Discorda dla jury, wybierane według nagłówka `Host`; adres makiety Discorda czeka na trasę w meritum-infra |
+| `meritum-mocks-prd` | meritum-mocks | makiety X, Facebooka, Instagrama, Reddita i TikToka oraz makieta Discorda dla jury, wybierane według nagłówka `Host` |
 | `meritum-postgres` | meritum-infra | jedna instancja PostgreSQL z bazą aplikacji `meritum` i osobną bazą DBOS dla każdego środowiska |
 | `meritum-gateway` | meritum-infra | nginx platformy, który kieruje adresy `meritum(-*).gburek.app` do kontenerów |
 
