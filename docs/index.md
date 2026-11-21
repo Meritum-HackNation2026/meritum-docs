@@ -39,7 +39,7 @@ Obywatel wkleja tekst albo link w formularzu na stronie, wysyła go botowi na Di
 
 !!! info "Stan kodu"
 
-    Meritum-core zawiera [kontrakt sprawdzania v4](jak-dziala/sprawdzenie.md#kontrakt-v4), [porty i adaptery](architektura/porty-i-adaptery.md) oraz migracje schematu aplikacji. API zleca workflow `check` i udostępnia strumień postępu. Docelowy przebieg analizy opisują [dokument produktowy](https://github.com/Meritum-HackNation2026/meritum-design-system/blob/main/docs/product-doc.html) i [decyzje architektoniczne](adr/index.md).
+    Meritum-core zawiera [kontrakt sprawdzania v4](jak-dziala/sprawdzenie.md#kontrakt-v4), [porty i adaptery](architektura/porty-i-adaptery.md) oraz migracje schematu aplikacji. Na gałęzi `develop` API zleca workflow `check` i udostępnia strumień postępu. Na `main`, czyli w środowisku prd, tej ścieżki jeszcze nie ma. Docelowy przebieg analizy opisują [dokument produktowy](https://github.com/Meritum-HackNation2026/meritum-design-system/blob/main/docs/product-doc.html) i [decyzje architektoniczne](adr/index.md).
 
 Działające środowiska:
 

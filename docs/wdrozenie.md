@@ -28,9 +28,11 @@ Każde repozytorium z kodem opisuje w swoim README pracę nad nim bez całego st
 | Środowisko | Gałąź | Schemat aplikacji w bazie `meritum` | Baza DBOS |
 |---|---|---|---|
 | dev | `develop` w meritum-frontend, meritum-backend i meritum-worker | `app_dev` | `meritum_dbos_dev` |
-| prd | `main` | `app_prd` | `meritum_dbos_prd` |
+| prd po migracji | `main` | `app_prd` | `meritum_dbos_prd` |
 
-API i worker współdzielą schemat aplikacji w obrębie swojego środowiska. Worker jest jego właścicielem, a API ma prawo czytać i zapisywać dane. Oba środowiska czytają wspólny schemat `corpus`. Zapisuje w nim tylko worker prd. Makiety są wdrażane z `main` i mają własny schemat `mocks_prd`. Role i uprawnienia opisuje [README infrastruktury](https://github.com/Meritum-HackNation2026/meritum-infra/blob/main/README.md).
+Tabela pokazuje układ z README meritum-infra. Worker na `develop` już go używa, a README backendu i workera na `main` nadal podają osobne schematy `api_prd` i `worker_prd`.
+
+Po przejściu na nowy układ API i worker współdzielą schemat aplikacji w obrębie swojego środowiska. Worker jest jego właścicielem, a API ma prawo czytać i zapisywać dane. Oba środowiska czytają wspólny schemat `corpus`. Zapisuje w nim tylko worker prd. Makiety są wdrażane z `main` i mają własny schemat `mocks_prd`. Role i uprawnienia opisuje [README infrastruktury](https://github.com/Meritum-HackNation2026/meritum-infra/blob/main/README.md).
 
 Kontener `meritum-mocks-dev` i schemat `mocks_dev` zostały po dawnym przepływie i nie dostają nowych wersji.
 
