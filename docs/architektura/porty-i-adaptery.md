@@ -65,11 +65,22 @@ flowchart LR
   ports --> jq
 ```
 
-Dzięki temu nowy kanał, model albo dostawca to nowy adapter, a domenę testujemy bez sieci, na adapterze `stub` albo na atrapie zgodnej z protokołem. Porty z dokumentów decyzji: `WebSearch` ([ADR-07](../adr/adr-07.md)), `CorpusSearch` ([ADR-32](../adr/adr-32.md)), `BlobStore` ([ADR-31](../adr/adr-31.md)) i `JobQueue` z `DbosJobQueue` w meritum-core. Klasyfikatory przed modelem (wstrzyknięcia, reranker, maskowanie danych) też stoją za portami, każdy z adapterem zapasowym, który nic nie robi, więc awaria bramki nie zatrzymuje sprawdzeń ([ADR-35](../adr/adr-35.md)).
+Diagram pokazuje układ docelowy. Poniższe porty mają już implementacje w [meritum-core](https://github.com/Meritum-HackNation2026/meritum-core/blob/main/README.md). Wybór adaptera zależy od ustawień, więc testy mogą korzystać z atrap bez dostępu do usług zewnętrznych.
+
+| Port | Co obsługuje |
+|---|---|
+| `LlmPort`, `EmbeddingsPort` | Model językowy zwraca odpowiedź zgodną z modelem Pydantic, a port embeddingów zwraca wektory. Oba mają adapter Vertex AI i stub. |
+| `BlobStore` | Port obsługuje pliki audio i obrazy. API zapisuje nagranie i zwraca identyfikator, po którym worker będzie mógł je odczytać do transkrypcji. Port ma adapter lokalnego systemu plików, adapter prywatnego zasobnika GCS i atrapę w pamięci ([ADR-31](../adr/adr-31.md)). |
+| `PageFetcherPort`, `PiiGatePort` | Fetcher pobiera publiczne strony HTTP(S) i blokuje adresy wewnętrzne także po przekierowaniu. Maskowanie łączy bramkę PII z regułami dla telefonów, adresów e-mail i numerów PESEL. |
+| `JobQueue` | Backend zleca zadania i czyta strumień postępu. Adapter `DbosJobQueue` używa `DBOSClient`, a testy mogą korzystać z `InMemoryJobQueue`. |
+
+Zapisy sprawdzeń, sprawy moderatorów, tematy wysokiego ryzyka i powiadomienia mają osobne porty repozytoriów. API i worker mogą korzystać z adapterów PostgreSQL, a lokalnie i w testach mają do dyspozycji atrapy w pamięci. [Układ bazy i migracje](../wdrozenie.md#migracje) opisuje strona o wdrożeniu.
 
 ## Kontrakty w jednym miejscu
 
-Kontrakty danych żyją tylko w meritum-core, w `meritum_core.checks.contracts` ([ADR-02](../adr/adr-02.md)). Z nich CI core generuje `contracts/meritum.schema.json` i `contracts/meritum.ts`. Design system i aplikacje w TypeScripcie trzymają kopie tych plików i nigdy ich nie edytują. Backend i worker przypinają konkretny commit core w `uv.lock` ([ADR-33](../adr/adr-33.md)). [Referencja kontraktów](../referencja/kontrakty.md) powstaje z JSON Schema.
+Meritum-core utrzymuje kontrakt sprawdzania w `meritum_core.checks.contracts` ([ADR-02](../adr/adr-02.md)). Z niego powstają JSON Schema i typy TypeScript, których kopie odświeżają design system i frontend. Backend i worker przypinają konkretny commit core w `uv.lock` ([ADR-33](../adr/adr-33.md)). Pola dodane w v4 opisuje strona [Sprawdzenie krok po kroku](../jak-dziala/sprawdzenie.md#kontrakt-v4).
+
+`meritum_core.jobs.contracts` ma własne wersjonowanie. Określa nazwy, kolejki oraz wejścia i wyniki workflowów sprawdzania, eskalacji, usuwania danych, raportu gotowości i zadania testowego `ping`.
 
 ## Co pilnuje zasad
 
@@ -83,3 +94,5 @@ Kontrakty danych żyją tylko w meritum-core, w `meritum_core.checks.contracts` 
 | martwy kod i bezpieczeństwo | vulture, bandit, knip |
 
 Wyjątek od reguły jest wąski i zawsze ma powód zapisany obok, w kodzie albo w `pyproject.toml`. Każde repozytorium z kodem opisuje swoje kontrole w `docs/architecture.md`.
+
+W core, backendzie i workerze `uv run behave` uruchamia scenariusze z `features/`. Domyślny przebieg pytest pomija testy z markerem `integration`. Frontend, wtyczka i makiety uruchamiają `node --test` przez `pnpm test`. `tsx` ładuje komponenty TSX, a happy-dom zapewnia DOM.

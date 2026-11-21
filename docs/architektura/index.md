@@ -4,7 +4,7 @@ icon: lucide/boxes
 
 # Kontekst i kontenery
 
-Diagramy idą za modelem C4: najpierw system wśród ludzi i usług zewnętrznych, potem kontenery w środku. Opisują stan docelowy z dokumentu produktowego. Dziś działa szkielet: frontend, API z kanałem Discord, worker z workflowem `ping`, makiety i PostgreSQL ([stan prac](../index.md#stan-prac)).
+Diagramy C4 pokazują docelowe otoczenie systemu i jego kontenery według dokumentu produktowego. Aktualne kontrakty, porty i bazę opisują [Porty i adaptery](porty-i-adaptery.md) oraz [Wdrożenie i uruchomienie](../wdrozenie.md).
 
 ## Kontekst systemu
 
@@ -67,7 +67,8 @@ flowchart TB
   ext -->|"to samo API"| cf
   api -->|"JobQueue przez DBOSClient"| db
   worker -->|"kolejki i tabele DBOS"| db
-  api -->|"swój schemat"| db
+  api -->|"schemat aplikacji"| db
+  worker -->|"ten sam schemat aplikacji"| db
   mocks -->|"swój schemat"| db
   worker --> llm
 ```
@@ -77,8 +78,8 @@ flowchart TB
 | `meritum-web-<env>` | meritum-frontend | statyczny build aplikacji w nginx; `/api` idzie do API tego samego środowiska |
 | `meritum-api-<env>` | meritum-backend | FastAPI: health, zlecanie zadań, kanał Discord, dokumentacja OpenAPI |
 | `meritum-worker-<env>` | meritum-worker | trwałe workflowy DBOS: sprawdzenie, pobieranie źródeł, retencja, ewaluacja |
-| `meritum-mocks-<env>` | meritum-mocks | makiety X, Facebooka, Instagrama, Reddita i TikToka; wybór po nagłówku `Host` |
-| `meritum-postgres` | meritum-infra | jedna baza `meritum` dla wszystkich; każda aplikacja i środowisko ma własną rolę i schemat |
+| `meritum-mocks-prd` | meritum-mocks | makiety X, Facebooka, Instagrama, Reddita i TikToka oraz makieta Discorda dla jury, wybierane według nagłówka `Host` |
+| `meritum-postgres` | meritum-infra | jedna instancja PostgreSQL z bazą aplikacji `meritum` i osobną bazą DBOS dla każdego środowiska |
 | `meritum-gateway` | meritum-infra | nginx platformy, który kieruje adresy `meritum(-*).gburek.app` do kontenerów |
 
 API nie wywołuje workera bezpośrednio. Zleca zadania przez port `JobQueue` z meritum-core, a worker wykonuje je jako workflowy DBOS o nazwie i kolejce z `WorkflowSpec`. Argument i wynik workflowu to jeden obiekt JSON, więc żadna strona nie potrzebuje klas drugiej. Worker przyjmuje tylko zadania ze swoim `application_version` (`dev`, `prd`, lokalnie `local`), więc środowiska nie podbierają sobie pracy.

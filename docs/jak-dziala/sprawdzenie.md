@@ -4,7 +4,15 @@ icon: lucide/workflow
 
 # Sprawdzenie krok po kroku
 
-Każde sprawdzenie to jeden workflow DBOS w meritum-worker ([ADR-03](../adr/adr-03.md)). Kanał, przez który przyszło pytanie, wysyła do API `CheckRequest`, a potem odczytuje `AnalysisStatus` z kolejnymi krokami, aż dostanie `CheckResult`. Wszystkie kanały dostają ten sam wynik w tym samym kształcie ([kontrakty](../referencja/kontrakty.md)).
+Na gałęzi `develop` API przyjmuje `CheckRequest` i zleca workerowi sprawdzenie przez `JobQueue`. Worker wykonuje zadanie jako workflow DBOS `check` ([ADR-03](../adr/adr-03.md)). Klient może odczytać `AnalysisStatus` po identyfikatorze sprawdzenia albo śledzić kolejne zdarzenia w strumieniu. Jeśli workflow zwróci `CheckResult`, klient dostanie go przed zamknięciem strumienia. Na `main`, czyli w środowisku prd, tej ścieżki jeszcze nie ma. Szczegóły punktów końcowych opisuje [README backendu](https://github.com/Meritum-HackNation2026/meritum-backend/blob/develop/README.md).
+
+## Kontrakt v4
+
+Wersja 4 przewiduje pole `transcript` na zamaskowaną transkrypcję nagrania. Sam krok transkrypcji w workflow `check` czeka na podłączenie do workera. Dla Discorda, SMS-a i MCP kontrakt przewiduje pole `channel_user_id`. API ma zapisywać wyłącznie jego skrót z solą (`channel_user_hash`). Obecnie punkt końcowy `POST /api/v1/checks` odrzuca żądania z tych trzech kanałów.
+
+W `CheckResult` kod awarii (`failure_code`) jest wymagany przy stanie `technical_failure`. Przy pozostałych stanach kod musi pozostać pusty. Kody ograniczeń (`limitation_codes`) nie zmieniają stanu wyniku. Każdy `ClaimResult` wymaga daty twierdzenia (`claim_date`) i źródła tej daty (`claim_date_source`). Przy dopasowaniu do znanego incydentu `match_basis` podaje podstawę dopasowania. W wyniku dla twierdzenia `would_change_verdict` wskazuje, czego brakuje do zmiany werdyktu. Kontrakt rozróżnia oceny fact-checkerów pokazane jako kontekst (`claim_reviews`) i oceny wykorzystane jako przesłanki (`claim_review_premises`). Przesłanką może być ocena ClaimReview fact-checkera z IFCN lub EFCSN podana z linkiem, bez cytowania treści jego strony ([ADR-34](../adr/adr-34.md)).
+
+Pola wersji 4 opisuje [zmiana kontraktu w meritum-core](https://github.com/Meritum-HackNation2026/meritum-core/pull/63). Dalsze sekcje przedstawiają docelowy przebieg sprawdzenia z dokumentu produktowego.
 
 ## Kroki
 
