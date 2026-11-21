@@ -2,7 +2,7 @@ name: Refresh generated pages
 
 # Daily: regenerates the ADR pages and the glossary (product doc in meritum-design-system),
 # the contract reference (JSON Schema in meritum-core) and the repo map (GitHub org), then
-# opens or updates one PR to develop when anything changed. Hand-written pages are never
+# opens or updates one PR to main when anything changed. Hand-written pages are never
 # touched: scripts/generate.py only writes files that carry its marker.
 #
 # MERITUM_BOT_TOKEN: fine-grained PAT, read-only (Contents: read, Metadata: read) on the org's
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.token.outputs.skip != 'true'
         with:
-          ref: develop
+          ref: main
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.token.outputs.skip != 'true'
         with:
@@ -80,7 +80,7 @@ jobs:
             --org "$ORG"
           uv run zensical build --strict --clean
 
-      - name: Open or update the PR to develop
+      - name: Open or update the PR to main
         if: steps.token.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -97,7 +97,7 @@ jobs:
 
           api="https://api.github.com/repos/$GITHUB_REPOSITORY"
           auth="Authorization: Bearer $GH_TOKEN"
-          open=$(curl -fsS -H "$auth" "$api/pulls?state=open&base=develop&head=$ORG:$BRANCH" | jq length)
+          open=$(curl -fsS -H "$auth" "$api/pulls?state=open&base=main&head=$ORG:$BRANCH" | jq length)
           if [ "$open" != "0" ]; then
             echo "PR already open; the branch was updated."
             exit 0
@@ -105,10 +105,10 @@ jobs:
           body=$(jq -n --arg b "$BRANCH" '{
             title: "Odśwież strony generowane",
             head: $b,
-            base: "develop",
+            base: "main",
             body: "Codzienne odświeżenie stron generowanych przez `scripts/generate.py`: decyzje ADR i słownik z dokumentu produktowego (meritum-design-system, `main`), referencja kontraktów z `contracts/meritum.schema.json` (meritum-core, `main`) i mapa repozytoriów organizacji.\n\nStrony pisane ręcznie się nie zmieniły. Build `zensical build --strict` przeszedł w tym przebiegu. Gałąź nadpisuje każdy kolejny przebieg, więc poprawki wprowadza się u źródła, nie tutaj."
           }')
           # needs "Allow GitHub Actions to create and approve pull requests" (org and repo settings)
           if ! curl -fsS -X POST -H "$auth" -H "Accept: application/vnd.github+json" "$api/pulls" -d "$body" | jq -r .html_url; then
-            echo "::warning::Could not open the PR with GITHUB_TOKEN; open it by hand: https://github.com/$GITHUB_REPOSITORY/compare/develop...$BRANCH"
+            echo "::warning::Could not open the PR with GITHUB_TOKEN; open it by hand: https://github.com/$GITHUB_REPOSITORY/compare/main...$BRANCH"
           fi

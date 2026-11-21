@@ -29,8 +29,10 @@ Każde repozytorium z kodem opisuje w swoim README pracę nad nim bez całego st
 
 | Środowisko | Gałąź | Kontenery | Schematy w bazie `meritum` |
 |---|---|---|---|
-| dev | `develop` | `meritum-web-dev`, `meritum-api-dev`, `meritum-worker-dev`, `meritum-mocks-dev` | `api_dev`, `worker_dev`, `mocks_dev` |
+| dev | `develop` w meritum-frontend, meritum-backend i meritum-worker | `meritum-web-dev`, `meritum-api-dev`, `meritum-worker-dev` | `api_dev`, `worker_dev` |
 | prd | `main` | `meritum-web-prd`, `meritum-api-prd`, `meritum-worker-prd`, `meritum-mocks-prd` | `api_prd`, `worker_prd`, `mocks_prd` |
+
+Pozostałe repozytoria mają tylko gałąź `main`, więc makiety wdrażają się tylko na prd. Kontener `meritum-mocks-dev` i schemat `mocks_dev` zostały po dawnym przepływie i nie dostają nowych wersji.
 
 Wszystkie środowiska dzielą kontener PostgreSQL `meritum-postgres`. Droga żądania: Cloudflare, tunel na serwer `dellpromaxgb10`, `meritum-gateway` (nginx platformy), kontener aplikacji. Platformę stawia idempotentny skrypt z meritum-infra.
 
@@ -46,12 +48,12 @@ flowchart LR
 ```
 
 - CI działa na każdej gałęzi, na trzech maszynach GCP w `europe-central2-a`, zarejestrowanych jako runnery organizacji z etykietami `self-hosted, meritum` ([ADR-15](adr/adr-15.md)).
-- CD rusza tylko dla `develop` (dev) i `main` (prd), po zielonym CI.
-- Wtyczka nie ma serwera: na `develop` i `main` CI buduje zip z adresem API danego środowiska i zostawia go jako artefakt przebiegu.
+- CD rusza po zielonym CI: z `develop` na dev (frontend, backend, worker) i z `main` na prd (te trzy oraz makiety).
+- Wtyczka nie ma serwera: na `main` CI buduje zip z adresem API prd i zostawia go jako artefakt przebiegu.
 - Testy end-to-end i testy wymagające kilku komponentów naraz nie trafiają do CI. Uruchamia się je ręcznie albo skryptem lokalnie.
 
 Organizacja jest na planie Free, więc sekrety organizacji nie trafiają do repozytoriów prywatnych. Każde repozytorium ma własne sekrety, na przykład `MERITUM_CORE_SSH_KEY` w backendzie i workerze.
 
 ## Ta dokumentacja
 
-Strona powstaje z repozytorium [meritum-docs](https://github.com/Meritum-HackNation2026/meritum-docs) w Zensical i trafia na Cloudflare Pages: `main` na [meritum-docs.pages.dev](https://meritum-docs.pages.dev), `develop` na [develop.meritum-docs.pages.dev](https://develop.meritum-docs.pages.dev). Codzienny workflow odświeża strony generowane z dokumentu produktowego, kontraktów i listy repozytoriów i otwiera PR do `develop`, gdy coś się zmieniło. Szczegóły są w README repozytorium.
+Strona powstaje z repozytorium [meritum-docs](https://github.com/Meritum-HackNation2026/meritum-docs) w Zensical i trafia z gałęzi `main` na Cloudflare Pages: [meritum-docs.pages.dev](https://meritum-docs.pages.dev). Codzienny workflow odświeża strony generowane z dokumentu produktowego, kontraktów i listy repozytoriów i otwiera PR do `main`, gdy coś się zmieniło. Szczegóły są w README repozytorium.

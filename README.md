@@ -5,7 +5,6 @@ Główna dokumentacja Meritum, obywatelskiego radaru dezinformacji (HackNation 2
 | Środowisko | Gałąź | Adres |
 |---|---|---|
 | produkcja | `main` | https://meritum-docs.pages.dev |
-| podgląd | `develop` | https://develop.meritum-docs.pages.dev |
 
 ## Praca lokalna
 
@@ -45,8 +44,8 @@ uv run python scripts/test_generate.py   # samosprawdzenie parsera dokumentu pro
 
 | Plik | Kiedy | Co robi | Sekrety |
 |---|---|---|---|
-| `.github/workflows/ci.yml` | każdy push | `zensical build --strict --clean`; na `develop` i `main` dodatkowo `wrangler pages deploy` (`main` to produkcja, `develop` podgląd) | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; bez nich build przechodzi, a deploy jest pominięty z ostrzeżeniem |
-| `.github/workflows/refresh.yml` | codziennie o 04:17 UTC i ręcznie | generuje strony od nowa, robi build w trybie strict i otwiera albo aktualizuje PR z gałęzi `chore/refresh-generated` do `develop`, gdy coś się zmieniło | `MERITUM_BOT_TOKEN` do odczytu innych repozytoriów; push i PR idą przez `GITHUB_TOKEN`; bez sekretu workflow kończy się ostrzeżeniem |
+| `.github/workflows/ci.yml` | każdy push | `zensical build --strict --clean`; na `main` dodatkowo `wrangler pages deploy` na produkcję | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`; bez nich build przechodzi, a deploy jest pominięty z ostrzeżeniem |
+| `.github/workflows/refresh.yml` | codziennie o 04:17 UTC i ręcznie | generuje strony od nowa, robi build w trybie strict i otwiera albo aktualizuje PR z gałęzi `chore/refresh-generated` do `main`, gdy coś się zmieniło | `MERITUM_BOT_TOKEN` do odczytu innych repozytoriów; push i PR idą przez `GITHUB_TOKEN`; bez sekretu workflow kończy się ostrzeżeniem |
 
 Oba działają na runnerach `[self-hosted, meritum]`. Organizacja jest na planie Free, więc sekrety muszą być sekretami repozytorium, nie organizacji.
 

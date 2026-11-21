@@ -47,7 +47,7 @@ Działające środowiska:
 |---|---|---|
 | Aplikacja webowa | [meritum.gburek.app](https://meritum.gburek.app) | [meritum-dev.gburek.app](https://meritum-dev.gburek.app) |
 | Dokumentacja API | [meritum.gburek.app/api/docs](https://meritum.gburek.app/api/docs) | [meritum-dev.gburek.app/api/docs](https://meritum-dev.gburek.app/api/docs) |
-| Ta dokumentacja | [meritum-docs.pages.dev](https://meritum-docs.pages.dev) | [develop.meritum-docs.pages.dev](https://develop.meritum-docs.pages.dev) |
+| Ta dokumentacja | [meritum-docs.pages.dev](https://meritum-docs.pages.dev) | brak, tylko `main` |
 
 Adresy makiet platform, wtyczki i aplikacji Discord są w [README repozytorium zbiorczego](https://github.com/Meritum-HackNation2026/meritum-monorepo#działające-środowiska).
 
