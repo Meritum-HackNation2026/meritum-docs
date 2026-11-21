@@ -39,7 +39,7 @@ Obywatel wkleja tekst albo link w formularzu na stronie, wysyła go botowi na Di
 
 !!! info "Stan kodu"
 
-    Repozytoria mają na razie szkielet: endpoint health, przykładowy workflow DBOS `ping`, komendę `/sprawdz` na Discordzie, która odpowiada, że rdzeń weryfikacji jest w budowie, i kontrakty danych w meritum-core. Strony „Jak działa” opisują system, który zespół dopiero buduje, według [dokumentu produktowego](https://github.com/Meritum-HackNation2026/meritum-design-system/blob/main/docs/product-doc.html) i [decyzji architektonicznych](adr/index.md).
+    Meritum-core zawiera [kontrakt sprawdzania v4](jak-dziala/sprawdzenie.md#kontrakt-v4), [porty i adaptery](architektura/porty-i-adaptery.md) oraz migracje schematu aplikacji. API zleca workflow `check` i udostępnia strumień postępu. Docelowy przebieg analizy opisują [dokument produktowy](https://github.com/Meritum-HackNation2026/meritum-design-system/blob/main/docs/product-doc.html) i [decyzje architektoniczne](adr/index.md).
 
 Działające środowiska:
 
