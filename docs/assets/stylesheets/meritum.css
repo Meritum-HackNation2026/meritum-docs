@@ -1,0 +1,336 @@
+/*
+  Meritum design system on Zensical.
+  Token values are copied from meritum-design-system tokens/meritum.css (light and dark);
+  when that file changes, change them here too. No colour below is new.
+  Rules: DESIGN_SYSTEM.md sections 3 (colours), 4 (type), 5 (shapes), 9 (motion), 10 (a11y).
+*/
+
+/* ------------------------------------------------------------ tokens */
+
+[data-md-color-scheme="default"] {
+  --background: #F6F7F5;
+  --foreground: #14191E;
+  --card: #FFFFFF;
+  --secondary: #E8ECEB;
+  --muted-foreground: #4C5862;
+  --accent: #E1EDF2;
+  --accent-foreground: #13506A;
+  --border: #D9DEDD;
+  --input: #C3CAC9;
+  --ring: #1D6A86;
+
+  --verified: #1D6A86;
+  --verified-surface: #E1EDF2;
+  --verified-foreground: #13506A;
+  --contested: #B7791F;
+  --contested-surface: #F8EEDB;
+  --contested-foreground: #7A4E08;
+  --scam: #C8213A;
+  --scam-surface: #FBE6E9;
+  --scam-foreground: #9E1A2E;
+}
+
+[data-md-color-scheme="slate"] {
+  --background: #0B0F12;
+  --foreground: #E7ECEE;
+  --card: #0B0F12;
+  --secondary: #22282C;
+  --muted-foreground: #9AA6AE;
+  --accent: #123441;
+  --accent-foreground: #9FD8EC;
+  --border: #2F3336;
+  --input: #3A4146;
+  --ring: #5DB3CF;
+
+  --verified: #5DB3CF;
+  --verified-surface: #123441;
+  --verified-foreground: #9FD8EC;
+  --contested: #F2C46D;
+  --contested-surface: #3A2C10;
+  --contested-foreground: #F2C46D;
+  --scam: #FF6B7D;
+  --scam-surface: #43161D;
+  --scam-foreground: #FFB3BE;
+}
+
+/* ------------------------------------------------------------ Zensical palette mapped to tokens */
+
+[data-md-color-scheme] {
+  --md-default-bg-color: var(--background);
+  --md-default-fg-color: var(--foreground);
+  --md-default-fg-color--light: var(--muted-foreground);
+  --md-default-fg-color--lighter: var(--input);
+  --md-default-fg-color--lightest: var(--secondary); /* theme uses it as a fill behind sea text; --border gives 4.47:1 */
+
+  /* links and the accent are sea; the primary action stays ink (section 3) */
+  --md-primary-fg-color: var(--verified);
+  --md-primary-fg-color--light: var(--verified);
+  --md-primary-fg-color--dark: var(--verified-foreground);
+  --md-primary-bg-color: var(--card);
+  --md-accent-fg-color: var(--accent-foreground);
+  --md-accent-fg-color--transparent: var(--accent);
+  --md-accent-bg-color: var(--card);
+  --md-typeset-a-color: var(--verified);
+  --md-typeset-color: var(--foreground);
+  --md-typeset-mark-color: var(--verified-surface);
+  --md-typeset-table-color: var(--border);
+  --md-typeset-table-color--light: var(--secondary);
+
+  --md-code-bg-color: var(--secondary);
+  --md-code-fg-color: var(--foreground);
+
+  /* syntax highlighting with ink, sea and grey only: the theme default has purple (section 3) */
+  --md-code-hl-color: var(--verified);
+  --md-code-hl-color--light: var(--verified-surface);
+  --md-code-hl-number-color: var(--verified-foreground);
+  --md-code-hl-special-color: var(--verified-foreground);
+  --md-code-hl-function-color: var(--foreground);
+  --md-code-hl-constant-color: var(--verified-foreground);
+  --md-code-hl-keyword-color: var(--verified-foreground);
+  --md-code-hl-string-color: var(--foreground);
+  --md-code-hl-name-color: var(--foreground);
+  --md-code-hl-operator-color: var(--muted-foreground);
+  --md-code-hl-punctuation-color: var(--muted-foreground);
+  --md-code-hl-comment-color: var(--muted-foreground);
+  --md-code-hl-generic-color: var(--muted-foreground);
+  --md-code-hl-variable-color: var(--foreground);
+
+  --md-footer-bg-color: var(--background);
+  --md-footer-bg-color--dark: var(--background);
+  --md-footer-fg-color: var(--foreground);
+  --md-footer-fg-color--light: var(--muted-foreground);
+  --md-footer-fg-color--lighter: var(--muted-foreground);
+
+  /* Mermaid: flat white cards with a 1 px border, ink text, grey edges */
+  --md-mermaid-font-family: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --md-mermaid-node-bg-color: var(--card);
+  --md-mermaid-node-fg-color: var(--foreground);
+  --md-mermaid-edge-color: var(--muted-foreground);
+  --md-mermaid-label-bg-color: var(--background);
+  --md-mermaid-label-fg-color: var(--foreground);
+  --md-mermaid-sequence-actor-bg-color: var(--card);
+  --md-mermaid-sequence-actor-fg-color: var(--foreground);
+  --md-mermaid-sequence-actor-border-color: var(--border);
+  --md-mermaid-sequence-actor-line-color: var(--muted-foreground);
+  --md-mermaid-sequence-note-bg-color: var(--secondary);
+  --md-mermaid-sequence-note-fg-color: var(--foreground);
+  --md-mermaid-sequence-note-border-color: var(--border);
+  --md-mermaid-sequence-message-fg-color: var(--foreground);
+  --md-mermaid-sequence-message-line-color: var(--muted-foreground);
+  --md-mermaid-sequence-number-bg-color: var(--verified);
+  --md-mermaid-sequence-number-fg-color: var(--card);
+}
+
+/* ------------------------------------------------------------ type: text 15/22, headings 700, sentence case */
+
+/* Fixed 20 px root, as the theme sets by default; its large-screen upscaling is off
+   because the design system type scale is fixed */
+html {
+  font-size: 125%;
+}
+
+.md-nav__source {
+  padding: 12px 16px;
+}
+
+/* px, not rem: the theme scales the root with the viewport, the design system scale does not */
+.md-typeset {
+  font-size: 15px;     /* Tekst 15/22 (section 4) */
+  line-height: 22px;
+}
+
+/* Nothing below 12 px (section 4): theme chrome, code and tables */
+.md-typeset code,
+.md-typeset kbd,
+.md-typeset pre code {
+  font-size: 0.85em; /* 12.75 px in 15 px text */
+}
+
+.md-typeset table:not([class]) code {
+  font-size: 12px; /* 0.85em of 13 px table text would fall below 12 px */
+}
+
+/* theme chrome in px: same sizes the theme renders at its 20 px root, never below 12 px */
+.md-nav { font-size: 14px; }
+.md-skip,
+.md-source,
+.md-source__repository,
+.md-source__facts,
+.md-search__input,
+.md-tooltip,
+.md-path,
+.md-footer,
+.md-footer-meta,
+.md-copyright { font-size: 13px; }
+.md-footer__direction,
+.md-copyright__highlight,
+.md-source__fact { font-size: 12px; }
+
+.md-footer-meta__inner {
+  padding: 8px 12px;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4 {
+  color: var(--foreground);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.md-typeset h1 { font-size: 22px; line-height: 28px; } /* Tytuł 22/28 */
+.md-typeset h2 { font-size: 18px; line-height: 24px; }
+.md-typeset h3 { font-size: 15px; line-height: 22px; }
+
+.md-nav__title,
+.md-nav__item--section > .md-nav__link {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* logo: the mark on light, the on-dark mark in dark mode (brand/, never redrawn) */
+[data-md-color-scheme="slate"] .md-header__button.md-logo img,
+[data-md-color-scheme="slate"] .md-nav__button.md-logo img {
+  content: url("../images/meritum-mark-on-dark.svg");
+}
+
+/* ------------------------------------------------------------ shapes: flat cards, 1 px border, no side stripes */
+
+.md-typeset .admonition,
+.md-typeset details {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  box-shadow: none;
+  font-size: inherit;
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  padding: 0 14px 2px;
+}
+
+.md-typeset .admonition > .admonition-title,
+.md-typeset details > summary {
+  margin: 0 -14px;
+  padding: 10px 14px 10px 40px;
+  background: var(--secondary);
+  border-radius: 11px 11px 0 0;
+  color: var(--foreground);
+}
+
+.md-typeset .admonition > .admonition-title::before,
+.md-typeset details > summary::before {
+  background-color: var(--verified);
+}
+
+.md-typeset table:not([class]) {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  font-size: 13px; /* Mały 13/20 */
+  line-height: 20px;
+}
+
+.md-typeset table:not([class]) th,
+.md-typeset table:not([class]) td {
+  padding: 12px 14px; /* card inset, section 5 */
+}
+
+.md-typeset table:not([class]) th {
+  background: var(--secondary);
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.md-typeset code {
+  border-radius: 6px;
+}
+
+.md-typeset .mermaid {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  padding: 16px;
+}
+
+/* ------------------------------------------------------------ focus and motion (sections 9, 10) */
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+/* ------------------------------------------------------------ components: verdict badge, state row, strength */
+
+/* Pill badge with the verdict word; colour never stands alone (section 3, 6.4) */
+.md-typeset .m-verdict {
+  display: inline-block;
+  padding: 2px 12px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25rem;
+  white-space: nowrap;
+}
+
+.md-typeset .m-verdict--confirmed { background: var(--verified-surface); color: var(--verified-foreground); }
+.md-typeset .m-verdict--misleading { background: var(--contested-surface); color: var(--contested-foreground); }
+.md-typeset .m-verdict--false { background: var(--scam-surface); color: var(--scam-foreground); }
+.md-typeset .m-verdict--muted { background: var(--secondary); color: var(--muted-foreground); }
+
+/* Non-verdict states: neutral icon and a plain line of text, never a badge */
+.md-typeset .m-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.md-typeset .m-state .twemoji { color: var(--muted-foreground); }
+
+/* Strength: an ink-coloured word with three level bars */
+.md-typeset .m-strength {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.md-typeset .m-strength__bars {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.md-typeset .m-strength__bars i {
+  width: 14px;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--secondary);
+}
+
+.md-typeset .m-strength[data-level="3"] .m-strength__bars i,
+.md-typeset .m-strength[data-level="2"] .m-strength__bars i:nth-child(-n + 2),
+.md-typeset .m-strength[data-level="1"] .m-strength__bars i:first-child {
+  background: var(--foreground);
+}
+
+/* reading measure for running text; tables and diagrams keep the full column */
+.md-typeset > p,
+.md-typeset > ul,
+.md-typeset > ol,
+.md-typeset dd {
+  max-width: 60ch; /* Archivo is narrow: 60ch is about 75 characters */
+  text-wrap: pretty;
+}

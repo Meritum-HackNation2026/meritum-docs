@@ -1,0 +1,114 @@
+[project]
+site_name = "Meritum"
+site_url = "https://meritum-docs.pages.dev/"
+site_description = "Dokumentacja Meritum, obywatelskiego radaru dezinformacji (HackNation 2026, konkurs MSZ „Prawdowid”)."
+copyright = "Meritum · HackNation 2026"
+repo_url = "https://github.com/Meritum-HackNation2026/meritum-docs"
+repo_name = "meritum-docs"
+edit_uri = "edit/develop/docs/"
+docs_dir = "docs"
+site_dir = "site"
+extra_css = ["assets/stylesheets/meritum.css"]
+
+nav = [
+  { "Czym jest Meritum" = "index.md" },
+  { "Jak działa" = [
+    { "Sprawdzenie krok po kroku" = "jak-dziala/sprawdzenie.md" },
+    { "Werdykty i reguły" = "jak-dziala/werdykty.md" },
+    { "Źródła i katalog" = "jak-dziala/zrodla.md" },
+  ] },
+  { "Kanały" = "kanaly.md" },
+  { "Architektura" = [
+    { "Kontekst i kontenery" = "architektura/index.md" },
+    { "Porty i adaptery" = "architektura/porty-i-adaptery.md" },
+    { "Mapa repozytoriów" = "architektura/repozytoria.md" },
+    { "Kontrakty danych" = "referencja/kontrakty.md" },
+  ] },
+  { "Decyzje (ADR)" = "adr/index.md" },
+  { "Prywatność" = "prywatnosc.md" },
+  { "Ewaluacja" = "ewaluacja.md" },
+  { "Wdrożenie i uruchomienie" = "wdrozenie.md" },
+  { "Współtworzenie" = "wspoltworzenie.md" },
+  { "Słownik pojęć" = "slownik.md" },
+]
+
+[project.theme]
+language = "pl"
+logo = "assets/images/meritum-mark.svg"
+favicon = "assets/images/meritum-app-icon.svg"
+features = [
+  "content.action.edit",
+  "content.code.copy",
+  "content.tooltips",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.path",
+  "navigation.sections",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+  "toc.follow",
+]
+
+# Archivo for all text, Azeret Mono for code and data (design-system/DESIGN_SYSTEM.md, section 4)
+[project.theme.font]
+text = "Archivo"
+code = "Azeret Mono"
+
+# Colours are custom: assets/stylesheets/meritum.css maps tokens/meritum.css onto both schemes
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Przełącz na tryb jasny"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/sun"
+toggle.name = "Przełącz na tryb ciemny"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+primary = "custom"
+accent = "custom"
+toggle.icon = "lucide/moon"
+toggle.name = "Przełącz na ustawienie systemu"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/Meritum-HackNation2026"
+name = "Meritum-HackNation2026 na GitHubie"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+tables = {}
+toc.permalink = true
+toc.permalink_title = "Link do tej sekcji"
+# keeps Polish letters in anchors (#siła-podstawy, not #sia-podstawy)
+toc.slugify.object = "pymdownx.slugs.slugify"
+toc.slugify.kwds.case = "lower"
+pymdownx.betterem = {}
+pymdownx.details = {}
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.mark = {}
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.tasklist.custom_checkbox = true
