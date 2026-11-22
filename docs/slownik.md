@@ -160,16 +160,16 @@ UCS-2 i limit SMS
 :   Kodowanie, którego wymagają polskie znaki w SMS-ie. Jeden SMS mieści wtedy 70 znaków, więc odpowiedź SMS to werdykt głównego twierdzenia i link do pełnego wyniku. Opcją jest GSM-7: litery bez ogonków i 160 znaków.
 
 Sesja
-:   Jedna wizyta w przeglądarce, oznaczona losowym identyfikatorem (8–64 znaki, pole session\_id). Historia rozmowy jest w sessionStorage i znika po zamknięciu karty. „Usuń moje sprawdzenia” usuwa z serwera wszystkie zapisy z tym identyfikatorem. Discord, SMS i MCP nie mają sesji przeglądarki: tam identyfikatorem sesji jest skrót z solą identyfikatora użytkownika kanału.
+:   Jedna wizyta w przeglądarce, oznaczona losowym identyfikatorem (8–64 znaki, pole session\_id). Historia rozmowy jest w sessionStorage tej karty i kart z niej otwartych. „Usuń moje sprawdzenia” usuwa z serwera wszystkie zapisy z tym identyfikatorem. Discord, SMS i MCP nie mają sesji przeglądarki: tam identyfikatorem sesji jest skrót z solą identyfikatora użytkownika kanału.
 
 Konto (opcjonalne)
-:   Logowanie kontem Google albo Microsoft, nigdy wymagane. Zapisujemy identyfikator konta od dostawcy logowania (pole user\_id) i historię sprawdzeń z zamaskowanym pytaniem, więc rozmowy są dostępne na innym urządzeniu. Użytkownik usuwa historię albo całe konto przyciskiem.
+:   Logowanie kontem Google albo Microsoft, nigdy wymagane. Zapisujemy imię i nazwisko, adres e-mail i identyfikator konta od dostawcy logowania (pole user\_id to identyfikator) oraz historię sprawdzeń z zamaskowanym pytaniem, więc rozmowy są dostępne na innym urządzeniu. Użytkownik usuwa historię albo całe konto przyciskiem.
 
 Zapis przebiegu
 :   Rekord jednego sprawdzenia (CheckRecord): zamaskowane pytanie, czas, kanał, skrót identyfikatora z Discorda albo SMS, źródła (także strony z wyszukiwania na żywo), werdykty, migawka korpusu, trafienie w pamięć wyników, użyte modele z regionem i kosztem, błędy wyszukiwania, próby wstrzyknięcia poleceń, eskalacja. Usuwany po 30 dniach.
 
 Maskowanie danych osobowych
-:   Zastąpienie numerów telefonów, adresów e-mail i numerów PESEL znacznikiem, np. \[TELEFON\], w API, zanim ruszy workflow. Dalej system i dostawca modelu widzą tylko wersję zamaskowaną.
+:   Zastąpienie identyfikatorów osoby (telefon, e-mail, PESEL, dowód osobisty, paszport, numer konta, karta płatnicza) znacznikiem, np. \[TELEFON\], w API, zanim ruszy workflow. Nie ukrywamy imion i nazwisk osób publicznych, nazw instytucji, dat ani kwot, bo bez nich nie da się sprawdzić twierdzenia. Dalej system i dostawca modelu widzą tylko wersję zamaskowaną.
 
 Polityka prywatności kanału
 :   Osobny dokument dla kanałów innych niż strona (Discord, SMS, wtyczka). Identyfikator z Discorda albo numer telefonu służy tylko do odpowiedzi i liczenia powtórzeń, jest przechowywany jako skrót z solą przez 30 dni i nie trafia do moderatorów; usuwa go polecenie /usun-moje-dane albo SMS ze słowem USUN. Telemetria tylko do zbiorczych miar liczbowych, adresy IP i regiony tylko do ochrony przed atakami. Polityka wymienia podmioty przetwarzające kanału.

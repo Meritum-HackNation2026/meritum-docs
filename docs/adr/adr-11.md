@@ -10,7 +10,7 @@ Model rozumie pytanie, wyodrębnia twierdzenia, ocenia wymowę cytatów i pisze 
 
 ## Decyzja
 
-Agenci Pydantic AI zwracają typy z kontraktu. Modele bierzemy z GCP przez Vertex AI: może to być dowolny dostępny tam model, niekoniecznie Claude. Główny model wybieramy testami ewaluacji (pydantic-evals, [ADR-28](adr-28.md)) spośród modeli dostępnych w Vertex AI w regionie UE. Kryteria: niska cena, dużo tokenów na sekundę i dobra polszczyzna. Bielika i PLLuM nie rozważamy. Model wybierany konfiguracją; dostawca, region i koszt trafiają do CheckRecord. Opcjonalny model od dostawcy z UE: Mistral Small 3.1 w Vertex AI w europe-west4 (0,10 USD za 1 mln tokenów wejścia, 0,30 USD za 1 mln wyjścia), z przetwarzaniem w UE przy wywołaniu regionalnego API.
+Agenci Pydantic AI zwracają typy z kontraktu. Domyślny główny model to Claude Haiku 5.5 przez OpenRouter (decyzja zespołu z 21.11.2026; Vertex AI wymaga dla Claude formularza dostępu Anthropic dla firmy). OpenRouter działa bez routingu w UE, z ustawieniem ZDR (zapytania i odpowiedzi nie są rutynowo przechowywane), więc model działa poza EOG. Konto organizacji musi mieć wyłączone „Safety Retention”, inaczej ZDR dopuszcza też Google Vertex AI, które może trzymać oznaczone zapytania do 90 dni. Inne modele porównujemy testami ewaluacji (pydantic-evals, [ADR-28](adr-28.md)). Kryteria: niska cena, dużo tokenów na sekundę i dobra polszczyzna. Bielika i PLLuM nie rozważamy. Model wybierany konfiguracją; dostawca, region i koszt trafiają do CheckRecord. Opcjonalny model od dostawcy z UE: Mistral Small 3.1 w Vertex AI w europe-west4 (0,10 USD za 1 mln tokenów wejścia, 0,30 USD za 1 mln wyjścia), z przetwarzaniem w UE przy wywołaniu regionalnego API.
 
 ## Konsekwencje
 
