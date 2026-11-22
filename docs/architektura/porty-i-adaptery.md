@@ -28,7 +28,7 @@ Domena importuje inną tylko przez jej pakiet. Prywatne moduły, funkcje i stał
 
 ## Porty, adaptery i fabryki
 
-Każda zależność zewnętrzna stoi za portem: model językowy, embeddingi, wyszukiwanie w sieci, transkrypcja, pobieranie stron, magazyn plików, logowanie, wysyłka powiadomień i baza incydentów. Port to `typing.Protocol` w `<domena>/ports.py` (w TypeScripcie `interface` w `ports.ts`) i mówi modelami domeny, nigdy typami SDK dostawcy. Każdy dostawca to adapter w `<domena>/adapters/`. Adapter buduje tylko fabryka w `<domena>/factory.py`, na podstawie ustawień.
+Każda zależność zewnętrzna stoi za portem: model językowy, embeddingi, reranker, wyszukiwanie w sieci i w korpusie, transkrypcja, OCR, pobieranie stron, maskowanie, bramka wstrzyknięć, magazyn plików i wysyłka powiadomień. Port to `typing.Protocol` w `<domena>/ports.py` (w TypeScripcie `interface` w `ports.ts`) i mówi modelami domeny, nigdy typami SDK dostawcy. Każdy dostawca to adapter w `<domena>/adapters/`. Adapter buduje tylko fabryka w `<domena>/factory.py`, na podstawie ustawień.
 
 ```mermaid
 flowchart LR
@@ -46,10 +46,10 @@ flowchart LR
   end
 
   subgraph out["Adaptery wyjściowe"]
-    llm["LLM: Vertex AI albo stub"]
-    ws["WebSearch: Vertex AI Search, SearXNG"]
+    llm["LLM: OpenRouter, Vertex AI albo stub"]
+    ws["WebSearch: wyszukiwarka domen katalogu, SearXNG, Linkup"]
     cs["CorpusSearch: PostgreSQL"]
-    blob["BlobStore: GCS"]
+    blob["BlobStore: wolumen, GCS, S3"]
     jq["JobQueue: DBOSClient"]
   end
 
@@ -65,22 +65,26 @@ flowchart LR
   ports --> jq
 ```
 
-Diagram pokazuje układ docelowy. Poniższe porty mają już implementacje w [meritum-core](https://github.com/Meritum-HackNation2026/meritum-core/blob/main/README.md). Wybór adaptera zależy od ustawień, więc testy mogą korzystać z atrap bez dostępu do usług zewnętrznych.
+Poniższe porty mają implementacje w [meritum-core](https://github.com/Meritum-HackNation2026/meritum-core/blob/main/README.md). Wybór adaptera zależy od ustawień, więc testy mogą korzystać z atrap bez dostępu do usług zewnętrznych.
 
 | Port | Co obsługuje |
 |---|---|
-| `LlmPort`, `EmbeddingsPort` | Model językowy zwraca odpowiedź zgodną z modelem Pydantic, a port embeddingów zwraca wektory. Oba mają adapter Vertex AI i stub. |
-| `BlobStore` | Port obsługuje pliki audio i obrazy. API zapisuje nagranie i zwraca identyfikator, po którym worker będzie mógł je odczytać do transkrypcji. Port ma adapter lokalnego systemu plików, adapter prywatnego zasobnika GCS i atrapę w pamięci ([ADR-31](../adr/adr-31.md)). |
-| `PageFetcherPort`, `PiiGatePort` | Fetcher pobiera publiczne strony HTTP(S) i blokuje adresy wewnętrzne także po przekierowaniu. Maskowanie łączy bramkę PII z regułami dla telefonów, adresów e-mail i numerów PESEL. |
+| `LlmPort` | Model językowy zwraca odpowiedź zgodną z modelem Pydantic i zużycie tokenów z kosztem. Port przyjmuje też definicje narzędzi i zwraca ich wywołania. Adaptery: OpenRouter (domyślnie Claude Haiku 5.5, endpointy ZDR, rozumowanie z konfiguracji), Vertex AI (Gemini) i stub. Awaria dostawcy to `ProviderUnavailableError`, a workflow zamienia ją w „Problem techniczny”. |
+| `EmbeddingsPort` | Wektory 768-wymiarowe z Vertex AI w regionie UE albo stub. Korpus i zapytania muszą używać tego samego modelu. |
+| `CorpusSearchPort`, `RerankerPort` | Wyszukiwanie hybrydowe w przypiętej migawce korpusu (adapter PostgreSQL i pamięć) oraz opcjonalny reranker (Vertex AI ranking API, Cloudflare Workers AI albo Cohere przez OpenRouter). Bez rerankera kolejność zostaje z wyszukiwania. |
+| `WebSearchPort` | Wyszukiwanie na żywo wyłącznie w domenach katalogu. Port nie pobiera stron. Zapasowe adaptery: własna instancja SearXNG i opcjonalny Linkup. |
+| `TranscriptionPort`, `OcrPort`, `ImageSearchPort` | Transkrypcja (Speech-to-Text v2, Chirp 3, multi-region `eu`), odczyt tekstu z obrazu (Cloud Vision, endpoint UE) i wyszukiwanie wcześniejszych wystąpień obrazu lub jawne „nie wyszukano”. Każdy ma stub. |
+| `BlobStore` | Pliki audio i obrazy. API zapisuje plik i zwraca identyfikator, po którym worker go odczytuje. Adaptery: system plików, prywatny bucket GCS, magazyn zgodny z S3 i atrapa w pamięci ([ADR-31](../adr/adr-31.md)). |
+| `PageFetcherPort`, `PiiGatePort`, `InjectionGatePort` | Fetcher pobiera publiczne strony HTTP(S), blokuje adresy wewnętrzne także po przekierowaniu, respektuje robots.txt i Content-Signal, a strony wymagające JavaScriptu renderuje lokalny Crawl4AI. Maskowanie łączy bramkę Google Sensitive Data Protection z regułami dla telefonów, e-maili i numerów dokumentów. Bramka wstrzyknięć to Model Armor albo Llama Guard w Cloudflare Workers AI; bez niej działają wzorce PL/EN i izolowany klasyfikator. |
 | `JobQueue` | Backend zleca zadania i czyta strumień postępu. Adapter `DbosJobQueue` używa `DBOSClient`, a testy mogą korzystać z `InMemoryJobQueue`. |
 
-Zapisy sprawdzeń, sprawy moderatorów, tematy wysokiego ryzyka i powiadomienia mają osobne porty repozytoriów. API i worker mogą korzystać z adapterów PostgreSQL, a lokalnie i w testach mają do dyspozycji atrapy w pamięci. [Układ bazy i migracje](../wdrozenie.md#migracje) opisuje strona o wdrożeniu.
+Zapisy sprawdzeń, sprawy moderatorów, tematy wysokiego ryzyka, powiadomienia, konta personelu, przebiegi i zestawy ewaluacji mają osobne porty repozytoriów, a `SubjectEraser` usuwa jedną osobę ze wszystkich tabel. API i worker mogą korzystać z adapterów PostgreSQL, a lokalnie i w testach mają do dyspozycji atrapy w pamięci. [Układ bazy i migracje](../wdrozenie.md#migracje) opisuje strona o wdrożeniu.
 
 ## Kontrakty w jednym miejscu
 
-Meritum-core utrzymuje kontrakt sprawdzania w `meritum_core.checks.contracts` ([ADR-02](../adr/adr-02.md)). Z niego powstają JSON Schema i typy TypeScript, których kopie odświeżają design system i frontend. Backend i worker przypinają konkretny commit core w `uv.lock` ([ADR-33](../adr/adr-33.md)). Pola dodane w v4 opisuje strona [Sprawdzenie krok po kroku](../jak-dziala/sprawdzenie.md#kontrakt-v4).
+Meritum-core utrzymuje kontrakt sprawdzania w `meritum_core.checks.contracts` ([ADR-02](../adr/adr-02.md)). Z niego powstają JSON Schema i typy TypeScript, których kopie odświeżają design system i frontend. Backend i worker przypinają konkretny commit core w `uv.lock` ([ADR-33](../adr/adr-33.md)). Kontrakt jest w wersji 18, a zmiany wersji od 4 opisuje strona [Sprawdzenie krok po kroku](../jak-dziala/sprawdzenie.md#kontrakt).
 
-`meritum_core.jobs.contracts` ma własne wersjonowanie. Określa nazwy, kolejki oraz wejścia i wyniki workflowów sprawdzania, eskalacji, usuwania danych, raportu gotowości i zadania testowego `ping`.
+`meritum_core.jobs.contracts` ma własne wersjonowanie. Określa nazwy, kolejki oraz wejścia i wyniki workflowów sprawdzania, eskalacji, usuwania danych, raportu gotowości, przebiegu ewaluacji (`eval_run`), archiwizacji strony (`archive_page`) i zadania testowego `ping`.
 
 ## Co pilnuje zasad
 
@@ -95,4 +99,4 @@ Meritum-core utrzymuje kontrakt sprawdzania w `meritum_core.checks.contracts` ([
 
 Wyjątek od reguły jest wąski i zawsze ma powód zapisany obok, w kodzie albo w `pyproject.toml`. Każde repozytorium z kodem opisuje swoje kontrole w `docs/architecture.md`.
 
-W core, backendzie i workerze `uv run behave` uruchamia scenariusze z `features/`. Domyślny przebieg pytest pomija testy z markerem `integration`. Frontend, wtyczka i makiety uruchamiają `node --test` przez `pnpm test`. `tsx` ładuje komponenty TSX, a happy-dom zapewnia DOM.
+W core, backendzie i workerze `uv run behave` uruchamia scenariusze z `features/`. Skan sekretów (gitleaks) sprawdza w każdym repozytorium tylko historię pushowanej gałęzi. Domyślny przebieg pytest pomija testy z markerem `integration`. Frontend, wtyczka i makiety uruchamiają `node --test` przez `pnpm test`. `tsx` ładuje komponenty TSX, a happy-dom zapewnia DOM.

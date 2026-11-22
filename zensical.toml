@@ -16,10 +16,13 @@ nav = [
     { "Sprawdzenie krok po kroku" = "jak-dziala/sprawdzenie.md" },
     { "Werdykty i reguły" = "jak-dziala/werdykty.md" },
     { "Źródła i katalog" = "jak-dziala/zrodla.md" },
+    { "Moderacja i odpowiedzi" = "jak-dziala/moderacja.md" },
   ] },
   { "Kanały" = "kanaly.md" },
   { "Architektura" = [
     { "Kontekst i kontenery" = "architektura/index.md" },
+    { "Przepływ danych" = "architektura/przeplyw-danych.md" },
+    { "Komponenty" = "architektura/komponenty.md" },
     { "Porty i adaptery" = "architektura/porty-i-adaptery.md" },
     { "Mapa repozytoriów" = "architektura/repozytoria.md" },
     { "Kontrakty danych" = "referencja/kontrakty.md" },
@@ -28,6 +31,7 @@ nav = [
   { "Prywatność" = "prywatnosc.md" },
   { "Ewaluacja" = "ewaluacja.md" },
   { "Wdrożenie i uruchomienie" = "wdrozenie.md" },
+  { "Runbooki" = "runbooki.md" },
   { "Współtworzenie" = "wspoltworzenie.md" },
   { "Słownik pojęć" = "slownik.md" },
 ]

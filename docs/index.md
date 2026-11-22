@@ -31,15 +31,15 @@ Obywatel wkleja tekst albo link w formularzu na stronie, wysyła go botowi na Di
 |---|---|
 | Obywatele | Wkleić tekst albo link i przeczytać krótką odpowiedź prostą polszczyzną, bez instalowania czegokolwiek i bez znajomości metod weryfikacji. |
 | Czytelnicy mediów społecznościowych | Sprawdzić post jednym kliknięciem tam, gdzie go widzą (wtyczka). |
-| Użytkownicy Discorda i SMS | Wysłać tekst botowi albo na numer i dostać krótką odpowiedź z linkiem do pełnego wyniku. SMS powstanie, jeśli starczy czasu. |
-| Moderatorzy i analitycy | Przejmować twierdzenia bez odpowiedzi, które są wysokiego ryzyka albo się powtarzają, i śledzić jakość: wstrzymania, próby wstrzyknięcia poleceń, czas odpowiedzi, koszt. |
+| Użytkownicy Discorda i SMS | Wysłać tekst, link albo wiadomość głosową botowi (na serwerze, w wiadomości prywatnej albo komendą) lub tekst na numer SMS i dostać krótką odpowiedź. Discord daje też przycisk „Pełna karta”. |
+| Moderatorzy i analitycy | Przejmować twierdzenia bez odpowiedzi, które są wysokiego ryzyka albo się powtarzają, odpowiadać pytającym z cytatami ze źródeł, śledzić jakość (wstrzymania, próby wstrzyknięcia poleceń, czas odpowiedzi, koszt) i eksportować dane. |
 | Jury konkursu MSZ | Samodzielnie przejść zestaw referencyjny przez formularz WWW i makietę Discorda. Wtyczka jest dla jury opcjonalna. |
 
 ## Stan prac
 
 !!! info "Stan kodu"
 
-    Meritum-core zawiera [kontrakt sprawdzania v4](jak-dziala/sprawdzenie.md#kontrakt-v4), [porty i adaptery](architektura/porty-i-adaptery.md) oraz migracje schematu aplikacji. Na gałęzi `develop` API zleca workflow `check` i udostępnia strumień postępu. Na `main`, czyli w środowisku prd, tej ścieżki jeszcze nie ma. Docelowy przebieg analizy opisują [dokument produktowy](https://github.com/Meritum-HackNation2026/meritum-design-system/blob/main/docs/product-doc.html) i [decyzje architektoniczne](adr/index.md).
+    Na gałęzi `develop` działa cały tor sprawdzania: formularz, Discord, SMS, wtyczka i konektor MCP wysyłają to samo `CheckRequest`, a worker liczy wynik prawdziwym modelem (Claude Haiku 5.5 przez OpenRouter) na [kontrakcie w wersji 18](jak-dziala/sprawdzenie.md#kontrakt). Obsługuje tekst, link, nagranie głosowe i zrzut ekranu. Są też panel moderatora z odpowiedziami dla pytających, ewaluacja z przebiegami zapisanymi w bazie i eksport dla analityka. Na `main`, czyli w środowisku prd, część tej ścieżki czeka na promocję `develop` do `main`. Docelowy przebieg opisują [dokument produktowy](https://github.com/Meritum-HackNation2026/meritum-design-system/blob/main/docs/product-doc.html) i [decyzje architektoniczne](adr/index.md).
 
 Działające środowiska:
 
@@ -55,5 +55,7 @@ Adresy makiet platform, wtyczki i aplikacji Discord są w [README repozytorium z
 
 - [Sprawdzenie krok po kroku](jak-dziala/sprawdzenie.md): co się dzieje od kliknięcia „Sprawdź” do karty wyniku.
 - [Werdykty i reguły](jak-dziala/werdykty.md): pięć werdyktów, siła podstawy i stany, które werdyktem nie są.
-- [Architektura](architektura/index.md): kontekst, kontenery, repozytoria, porty i adaptery.
+- [Moderacja i odpowiedzi](jak-dziala/moderacja.md): sprawy, odpowiedź dla pytającego, powiadomienia i eksport.
+- [Architektura](architektura/index.md): kontekst, kontenery, przepływ danych, komponenty, porty i adaptery.
+- [Runbooki](runbooki.md): co robić, gdy czegoś brakuje albo coś nie działa.
 - [Współtworzenie](wspoltworzenie.md): zasady dla ludzi i agentów AI.
