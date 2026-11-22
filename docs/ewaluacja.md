@@ -32,7 +32,24 @@ Próba wstrzyknięcia jest odparta, gdy werdykt zgadza się z etykietą tego sam
 
 ## Jak uruchamiamy
 
-Ewaluację prowadzi pydantic-evals ([ADR-28](adr/adr-28.md)). Nie biegnie w CI, nawet w części. Przebieg startuje ręcznie, ze strony ewaluacji w aplikacji albo według harmonogramu, jako workflow DBOS w workerze, a wyniki trafiają do bazy. Strona ewaluacji jest za logowaniem dla ról analityk i administrator: pokazuje historię przebiegów z wynikami przypadków, uruchamia nowy przebieg, przyjmuje inny zestaw i porównuje dwa przebiegi.
+Ewaluację prowadzi pydantic-evals ([ADR-28](adr/adr-28.md)). Nie biegnie w CI, nawet w części. Przebieg startuje ręcznie albo ze strony ewaluacji w aplikacji, jako workflow DBOS `eval_run` w workerze. Przebiegi i zestawy leżą w bazie (tabele `eval_runs` i `eval_datasets` z migracji 0005 w meritum-core), a plik własnego zestawu w `BlobStore`. Przebieg kończy się powiadomieniem.
+
+Strona ewaluacji jest za logowaniem dla ról analityk i administrator. Pokazuje historię przebiegów z wynikami przypadków, uruchamia nowy przebieg, przyjmuje własny zestaw i porównuje dwa przebiegi. Odpowiada jej API: start przebiegu, lista, ostatni przebieg, wyniki przypadków, wgranie zestawu i porównanie. Jury może otworzyć stronę z jednorazowego linku, w sesji tylko do odczytu.
+
+Z linii poleceń w repozytorium workera:
+
+```bash
+uv run meritum-eval                                  # golden set, raport JSON
+uv run meritum-eval --cases jury.csv --output raport.json --max-concurrency 4
+```
+
+Model wybiera konfiguracja `MERITUM_LLM_*`, więc jeden przebieg na model daje porównywalny raport. Wyniki zawierają też mierniki spójności kanałów (`channel_consistency`), pętli informacji (`information_loop`, czyli wstrzymania przekazane moderatorowi), tokenów i kosztu na sprawdzenie oraz trafności per scenariusz A–J.
+
+## Porównania
+
+Kandydaci na model językowy i model embeddingów żyją w plikach TOML, nie w kodzie (`evals/models/`, `evals/embeddings/`). `--compare-models` i `--compare-embeddings` uruchamiają każdego na tym samym pliku przypadków i zapisują jeden raport z datą. Przebieg `gates` porównuje bramki przed modelem: klasyfikator wstrzyknięć, reranker i maskowanie z nadmiarowym maskowaniem ([ADR-35](adr/adr-35.md)). Model bez endpointu ZDR wolno uruchamiać wyłącznie na golden secie, nigdy na danych użytkowników. Po każdym przebiegu osoba z zespołu ocenia ręcznie losową próbę co najmniej 20 cytatów i zapisuje wynik w `evals/reports/`.
+
+Koszt 1000 sprawdzeń liczy skrypt `scripts/measure_costs.py` w repozytorium zbiorczym (albo `meritum-cost` w workerze) z rekordów `CheckRecord`. Do czasu pomiaru na prawdziwych dostawcach ta strona nie podaje liczby.
 
 ## Odtwarzalność
 

@@ -42,9 +42,11 @@ Siłę mają tylko werdykty rozstrzygające. Liczy ją funkcja z przesłanek, a 
 | <span class="m-strength" data-level="2">Umiarkowana <span class="m-strength__bars" aria-hidden="true"><i></i><i></i><i></i></span></span> | co najmniej 2 zgodni wydawcy albo 1 urzędowy lub pierwotny |
 | <span class="m-strength" data-level="1">Słaba <span class="m-strength__bars" aria-hidden="true"><i></i><i></i><i></i></span></span> | jeden wydawca spoza źródeł urzędowych albo dowód nieaktualny |
 
+Ocena fact-checkera z IFCN albo EFCSN liczy się jak jeden wydawca wtórny, a jedna taka ocena daje siłę co najmniej „Umiarkowana”. Częściowe potwierdzenie twierdzenia nie daje werdyktu „Potwierdzone”.
+
 Siła jest zawsze w kolorze atramentu, jako słowo i trzy kreski poziomu.
 
-Wiek dowodu liczymy od daty, której dotyczy twierdzenie, i zapisujemy, skąd ta data pochodzi: z tekstu, z daty publikacji wejścia albo z dnia sprawdzenia. Źródło starsze o ponad 365 dni od tej daty jest nieaktualne i obniża siłę do „Słaba”. Pozycja katalogu może ustawić krótszy próg dla źródeł krótkotrwałych, takich jak ostrzeżenia czy informacje drogowe. Obowiązujący akt prawny, strona urzędowa aktualizowana w miejscu i dowód o zdarzeniu z przeszłości nie są archiwalne. Dowód zastąpiony nowszym nie tworzy sprzeczności ([ADR-25](../adr/adr-25.md)).
+Wiek dowodu liczymy od daty, której dotyczy twierdzenie, i zapisujemy, skąd ta data pochodzi: z tekstu, z daty publikacji wejścia albo z dnia sprawdzenia. Źródło starsze o ponad 365 dni od tej daty jest nieaktualne i obniża siłę do „Słaba”. Pozycja katalogu może ustawić krótszy próg (`max_age_hours`) dla źródeł krótkotrwałych, takich jak ostrzeżenia czy informacje drogowe. Obowiązujący akt prawny, strona urzędowa aktualizowana w miejscu i dowód o zdarzeniu z przeszłości nie są archiwalne. Dowód zastąpiony nowszym nie tworzy sprzeczności ([ADR-25](../adr/adr-25.md)).
 
 ## Stany, które nie są werdyktem
 
@@ -56,11 +58,11 @@ Gdy sprawdzenie nie kończy się werdyktem, karta pokazuje ikonę, tytuł stanu 
 | <span class="m-state">:lucide-circle-slash: Poza zakresem</span> | `out_of_scope` | Sprawdzamy twierdzenia o faktach z życia publicznego. Tego pytania nie obsługujemy. |
 | <span class="m-state">:lucide-triangle-alert: Problem techniczny</span> | `technical_failure` | Nie udało się sprawdzić. To nie jest ocena treści. Spróbuj za kilka minut. |
 
-„Poza zakresem” dostaje tylko nieobsługiwany typ wejścia albo prośba, która nie dotyczy informacji, na przykład o napisanie tekstu. „Doprecyzuj pytanie” dostaje tylko wejście, z którego nie da się wyodrębnić żadnego twierdzenia. Niedostępny adres albo strona za paywallem to problem techniczny. Każde twierdzenie o fakcie dostaje werdykt.
+„Poza zakresem” dostaje tylko nieobsługiwany typ wejścia albo prośba, która nie dotyczy informacji, na przykład o napisanie tekstu. „Doprecyzuj pytanie” dostaje tylko wejście, z którego nie da się wyodrębnić żadnego twierdzenia. Każdy tekst ograniczenia ma własny kod, a stan „Poza zakresem” podaje kod powodu (nagranie, obraz, rodzaj prośby), więc karta mówi, co wysłać zamiast. Niedostępny adres albo strona za paywallem to problem techniczny. Każde twierdzenie o fakcie dostaje werdykt.
 
 ## Ostrzeżenia obok werdyktu
 
-Karta może pokazać materiał archiwalny, podobieństwo do znanego incydentu i neutralną informację, że treść pochodzi od podmiotu z oficjalnej listy sankcji UE. Każde ostrzeżenie stoi w osobnym wierszu, bez czerwieni, i żadne nie zmienia werdyktu.
+Obok werdyktu karta może pokazać werdyktu ocenę fact-checkera, materiał archiwalny, podobieństwo do znanego incydentu i neutralną informację, że treść pochodzi od podmiotu z oficjalnej listy sankcji UE. Każde ostrzeżenie stoi w osobnym wierszu, bez czerwieni, i żadne nie zmienia werdyktu. Pole „co zmieniłoby werdykt” liczy reguła, a oś czasu dowodów pokazuje daty i rozbieżność.
 
 ## Sprawy dla moderatorów
 

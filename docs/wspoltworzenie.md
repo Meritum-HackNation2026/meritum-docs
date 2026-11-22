@@ -31,6 +31,7 @@ flowchart LR
 - Interfejs korzysta wyłącznie z design systemu: tokenów, krojów Archivo i Azeret Mono, komponentów i tekstów z `copy/pl.json` (skill `meritum-ui`). Jedyny wyjątek to skórki platform widżetu i makiet.
 - Kod przestrzega zasad z [Porty i adaptery](architektura/porty-i-adaptery.md) (skill `meritum-architecture`).
 - Żadnych sekretów, tokenów, prawdziwych danych osobowych ani ukrytego zestawu jury w kodzie, zgłoszeniach i logach.
+- Gitleaks skanuje historię pushowanej gałęzi; lokalnie włącz hook `scripts/setup-git-hooks.sh`.
 - Żadnych testów end-to-end ani testów wymagających kilku komponentów naraz w CI.
 - Żadnych tagów, wydań ani PR `develop` → `main` bez prośby człowieka.
 - Commity, PR, zgłoszenia i komentarze nie mają podpisów wskazujących AI: bez `Co-Authored-By` dla AI, bez „Generated with”, bez emoji robota.
