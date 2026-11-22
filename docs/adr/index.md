@@ -23,7 +23,7 @@ Status **Przyjęta** oznacza decyzję podjętą przez zespół. **Proponowana** 
 | [ADR-11](adr-11.md) | Pydantic AI ze strukturalnym wyjściem; model nie decyduje sam | **Przyjęta** |
 | [ADR-12](adr-12.md) | Ochrona przed prompt injection warstwami | **Przyjęta** |
 | [ADR-13](adr-13.md) | Prywatność: maskowanie, retencja, usuwanie danych, konta opcjonalne | **Przyjęta** |
-| [ADR-14](adr-14.md) | GCP w UE (europe-central2) jako docelowe miejsce demo; rejestr podmiotów przetwarzających | **Proponowana (w toku)** |
+| [ADR-14](adr-14.md) | Demo na serwerze zespołu w Polsce, pliki i embeddingi Vertex AI w GCP europe-central2, model językowy przez OpenRouter; rejestr podmiotów przetwarzających | **Proponowana (w toku)** |
 | [ADR-15](adr-15.md) | Self-hosted runnery GitHub Actions | **Przyjęta** |
 | [ADR-16](adr-16.md) | Frontend: React, TanStack Router + Query, shadcn/ui, Tailwind v4; jakość wymuszana narzędziami | **Przyjęta** |
 | [ADR-17](adr-17.md) | Serwer MCP (FastMCP) jako kolejny adapter i konektor dla aplikacji czatu AI | **Przyjęta** |
