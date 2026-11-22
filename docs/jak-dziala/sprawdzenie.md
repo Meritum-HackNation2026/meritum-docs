@@ -11,9 +11,11 @@ Kanały wysyłają do API to samo `CheckRequest`. API maskuje dane osobowe, licz
 | Wejście | Jak trafia do sprawdzenia | Ograniczenia |
 |---|---|---|
 | Tekst | pole `text` | do 4000 znaków |
-| Link | pole `url`; worker pobiera stronę (krok `fetch_url`) | tylko http(s); adresy wewnętrzne są blokowane także po przekierowaniu; link z loginem lub hasłem dostaje 422 |
+| Link | pole `url` albo adres http(s) wpisany w polu `text`, sam lub obok pytania; worker pobiera stronę (krok `fetch_url`) | tylko http(s); adresy wewnętrzne są blokowane także po przekierowaniu; link z loginem lub hasłem w polu `url` dostaje 422 |
 | Nagranie | API zapisuje plik w `BlobStore` i zwraca `audio_id`; worker transkrybuje go Chirpem 3 w multi-regionie `eu` | OGG Opus, MP3, M4A albo WAV, do 20 MiB i 10 minut; nagranie dłuższe niż 55 s idzie w trybie batch i kończy się powiadomieniem |
 | Zrzut ekranu | API zapisuje obraz i zwraca `image_id`; worker czyta tekst przez OCR (Cloud Vision, endpoint UE) | PNG, JPEG, WebP do 10 MiB; `image_id` wyklucza `text`, `url` i `audio_id` |
+
+Pytanie o artykuł, na przykład „Czy ten artykuł mówi prawdę” z adresem obok, prowadzi do sprawdzenia artykułu. Worker pobiera stronę i wybiera od 2 do 4 jej głównych twierdzeń. Gdy tekst obok linku ma własne twierdzenia, sprawdzane są one, a strona jest kontekstem. Gdy strony nie da się pobrać (paywall, logowanie, robots.txt, blokada), krok `fetch_url` kończy się stanem nieudanym, a sprawdzenie idzie dalej z tym, co wynika z pytania i ze słów w adresie. Odpowiedź mówi wtedy w ograniczeniach, że strony nie udało się otworzyć. Jeśli ani pytanie, ani adres nie dają twierdzenia, wynik to awaria techniczna z kodem `url_unavailable` i prośbą o wklejenie tekstu.
 
 Odczytany tekst z nagrania albo obrazu jest maskowany i sprawdzany jak wklejony. Karta wyniku pokazuje transkrypcję z ostrzeżeniem o możliwych błędach albo tekst odczytany z obrazu. Data zapisana na obrazie datuje twierdzenia, ale nie potwierdza daty publikacji, o czym mówi ograniczenie w odpowiedzi. Wyszukiwania wcześniejszych wystąpień obrazu jeszcze nie ma i wynik mówi o tym kodem ograniczenia `image_search_not_run`. Nieobsługiwany format albo za duży plik daje stan „Poza zakresem” z komunikatem, co wysłać zamiast. Obraz bez tekstu daje „Doprecyzuj pytanie”.
 
@@ -46,7 +48,7 @@ Kody kroków pochodzą z kontraktu (`AnalysisStep.code`), a ich nazwy z `copy/pl
 | Kod | Co widzi użytkownik | Kiedy |
 |---|---|---|
 | `receive` | Przyjmujemy pytanie | zawsze; dla zrzutu ekranu obejmuje odczyt tekstu z obrazu (OCR) |
-| `fetch_url` | Pobieramy stronę z linku | tylko gdy wklejono link; przy samym tekście krok jest pominięty |
+| `fetch_url` | Pobieramy stronę z linku | gdy podano link, także wpisany w tekście pytania; przy tekście bez adresu krok jest pominięty |
 | `transcribe_audio` | Zamieniamy nagranie na tekst | tylko dla pliku audio albo wiadomości głosowej |
 | `screen_injection` | Sprawdzamy, czy treść nie zawiera ukrytych poleceń | zawsze, przed każdym wywołaniem modelu |
 | `extract_claims` | Wyodrębniamy twierdzenia do sprawdzenia | zawsze; najwyżej 5 twierdzeń, opinie osobno od faktów |
